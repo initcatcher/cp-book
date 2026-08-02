@@ -113,9 +113,21 @@ stderr 가 그대로 따라 나온다.
   조용히 건너뛴다.
 - **C++** 은 `g++ -std=c++17 -O2 -Wall -Wextra`. 바꾸려면 `rules.mk` 의 변수만
   고치거나 `make CXXSTD=c++20 test` 처럼 덮어쓰면 된다.
+- **`solve()` 는 테스트 케이스 하나만 담당하고, 답을 직접 `print` 한다.**
+  첫 줄의 테스트 케이스 개수는 `main()` 이 읽어서 그 횟수만큼 `solve()` 를
+  불러 준다. `solve()` 안에서 개수를 **또 읽으면 입력이 통째로 어긋난다** —
+  가장 흔한 실수다. Python 과 C++ 템플릿이 같은 구조다.
+
+  ```python
+  def solve():
+      n = int(input())
+      words = [input() for _ in range(n)]
+      print(answer)
+  ```
+
 - **Python 입력**은 그냥 `input()` 을 쓰면 된다. 템플릿이 `sys.stdin.readline`
   기반으로 덮어써 두었고 개행도 떼 주므로, 문자열을 읽을 때 `.strip()` 을 빼먹어
-  틀리는 일이 없다. `solve()` 안에서 `int(input())`, `map(int, input().split())`,
+  틀리는 일이 없다. `int(input())`, `map(int, input().split())`,
   `[input() for _ in range(n)]` 이 그대로 동작한다.
 
   드물게 한 줄에 들어와야 할 토큰이 여러 줄에 걸쳐 오는 문제라면 줄 단위 읽기가

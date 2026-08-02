@@ -18,24 +18,25 @@ def input():
 
 
 def solve():
-    """테스트 케이스 하나를 풀어서 출력할 값을 돌려준다.
+    """테스트 케이스 하나를 풀어서 답을 print 한다.
 
     예)  n = int(input())
          a, b = map(int, input().split())
          words = [input() for _ in range(n)]
+         print(answer)
 
-    여러 줄을 출력해야 하면 "\\n".join(...) 으로 묶어서 돌려주면 된다.
+    디버그 출력은 print(..., file=sys.stderr) 로. stdout 은 채점 대상이다.
     """
     # TODO
-    return ""
 
 
 def main():
     sys.setrecursionlimit(10**6)
 
-    # 종만북/algospot 은 첫 줄이 테스트 케이스 개수 C.
-    results = [solve() for _ in range(int(input()))]
-    sys.stdout.write("\n".join(str(r) for r in results) + "\n")
+    # 종만북/algospot 은 첫 줄이 테스트 케이스 개수.
+    # 개수는 여기서만 읽는다 — solve() 안에서 또 읽으면 입력이 어긋난다.
+    for _ in range(int(input())):
+        solve()
 
 
 if __name__ == "__main__":
