@@ -1,0 +1,41 @@
+# Allowlist: only source code and text files are tracked.
+# Ignore everything, then re-admit known-good types.
+*
+
+# always descend into directories so nested allows can match
+!*/
+
+# --- source ---
+!*.py
+!*.cpp
+!*.cc
+!*.c
+!*.h
+!*.hpp
+!*.sh
+!Makefile
+!makefile
+
+# --- text / data / config ---
+!*.txt
+!*.md
+!*.json
+!*.yaml
+!*.yml
+!*.toml
+!*.cfg
+!.gitignore
+
+# --- never, regardless of the rules above ---
+.claude/
+.agents/
+skills-lock.json
+*.zip
+a.out
+*.o
+*.pyc
+__pycache__/
+.venv/
+.pytest_cache/
+build/
+bin/
