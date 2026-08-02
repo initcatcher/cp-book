@@ -8,12 +8,23 @@
 import sys
 
 
-def solve(read):
+def input():
+    """한 줄 읽어서 개행 없이 돌려준다.
+
+    빠른 입력이라 builtin input 을 덮어쓴다. 개행을 미리 떼 주므로
+    문자열을 읽을 때 .strip() 을 빼먹어 틀리는 일이 없다.
+    """
+    return sys.stdin.readline().rstrip("\n")
+
+
+def solve():
     """테스트 케이스 하나를 풀어서 출력할 값을 돌려준다.
 
-    read() 를 부를 때마다 입력 토큰이 문자열로 하나씩 나온다.
-    예)  n = int(read())
-         arr = [int(read()) for _ in range(n)]
+    예)  n = int(input())
+         a, b = map(int, input().split())
+         words = [input() for _ in range(n)]
+
+    여러 줄을 출력해야 하면 "\\n".join(...) 으로 묶어서 돌려주면 된다.
     """
     # TODO
     return ""
@@ -22,11 +33,8 @@ def solve(read):
 def main():
     sys.setrecursionlimit(10**6)
 
-    tokens = iter(sys.stdin.buffer.read().split())
-    read = lambda: next(tokens).decode()  # noqa: E731
-
     # 종만북/algospot 은 첫 줄이 테스트 케이스 개수 C.
-    results = [solve(read) for _ in range(int(read()))]
+    results = [solve() for _ in range(int(input()))]
     sys.stdout.write("\n".join(str(r) for r in results) + "\n")
 
 
