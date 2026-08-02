@@ -15,6 +15,11 @@
 !*.sh
 !Makefile
 !makefile
+!*.mk
+
+# --- test data (tests/NN.in, tests/NN.out) ---
+!*.in
+!*.out
 
 # --- text / data / config ---
 !*.txt
