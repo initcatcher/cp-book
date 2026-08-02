@@ -21,7 +21,12 @@ PYTHON   ?= python3
 
 BIN    := sol.bin
 DBGBIN := sol.dbg.bin
+# T=02 를 주면 그 케이스만 돌린다 — 중간 확인용.
+ifdef T
+TESTS  := $(wildcard tests/$(T).in)
+else
 TESTS  := $(sort $(wildcard tests/*.in))
+endif
 
 # 풀이 파일은 "존재하고 비어 있지 않을 때"만 대상으로 삼는다.
 # 한 언어로만 풀 거면 반대쪽 파일을 지우면 조용히 스킵된다.
@@ -41,19 +46,23 @@ endif
 # 실패해도 다른 쪽이 계속 돌고, 종료 코드도 한 번만 합산된다.
 #   run_suite <라벨> <실행할 명령>
 # 비교는 공백/빈 줄을 무시하는 diff. 실패하면 expected vs actual 을 보여준다.
+#
+# stdout 과 stderr 를 분리해서 다룬다 — 채점은 stdout 만 본다. 그래야 풀다가
+# 넣어 둔 cerr / print(file=sys.stderr) 디버그 출력이 정답을 오답으로 만들지
+# 않는다. stderr 는 그 케이스가 실패했을 때만 참고용으로 보여준다.
 # ---------------------------------------------------------------------------
 define SUITE_FN
 run_suite() { \
 	label="$$1"; cmd="$$2"; \
-	pass=0; fail=0; total=0; start=$$(date +%s%N); \
+	pass=0; fail=0; total=0; errf=$$(mktemp); start=$$(date +%s%N); \
 	for input in $(TESTS); do \
 		total=$$((total+1)); \
 		expected="$${input%.in}.out"; \
-		actual=$$(sh -c "$$cmd" < "$$input" 2>&1); status=$$?; \
+		actual=$$(sh -c "$$cmd" < "$$input" 2>"$$errf"); status=$$?; \
 		if [ $$status -ne 0 ]; then \
 			fail=$$((fail+1)); \
 			printf '  [%-3s] FAIL %s — exit %d\n' "$$label" "$$input" "$$status"; \
-			printf '%s\n' "$$actual" | sed 's/^/        /'; \
+			sed 's/^/        /' "$$errf"; \
 		elif [ ! -f "$$expected" ]; then \
 			fail=$$((fail+1)); \
 			printf '  [%-3s] FAIL %s — %s 가 없음\n' "$$label" "$$input" "$$expected"; \
@@ -65,8 +74,12 @@ run_suite() { \
 			printf '%s\n' "$$actual" \
 				| diff -u -w -B --label expected --label actual "$$expected" - \
 				| sed 's/^/        /'; \
+			if [ -s "$$errf" ]; then \
+				printf '        --- stderr ---\n'; sed 's/^/        /' "$$errf"; \
+			fi; \
 		fi; \
 	done; \
+	rm -f "$$errf"; \
 	ms=$$(( ($$(date +%s%N) - start) / 1000000 )); \
 	if [ $$fail -eq 0 ]; then mark='OK'; else mark='FAIL'; fi; \
 	printf '  [%-3s] %d/%d %s  %d.%03ds\n' "$$label" "$$pass" "$$total" "$$mark" \
@@ -113,15 +126,15 @@ endif
 # 테스트 데이터가 하나도 없으면 통과 처리하지 않고 분명히 알린다.
 
 test: $(TEST_DEPS)
-	@test -n '$(TESTS)' || { echo '  테스트 없음 — tests/01.in 과 tests/01.out 을 만드세요'; exit 1; }
+	@test -n '$(TESTS)' || { echo '  테스트 없음 — tests/$(or $(T),NN).in 이 있는지 확인하세요'; exit 1; }
 	@$(SUITE_FN); rc=0; $(RUN_PY) || rc=1; $(RUN_CPP) || rc=1; exit $$rc
 
 test-py:
-	@test -n '$(TESTS)' || { echo '  테스트 없음 — tests/01.in 과 tests/01.out 을 만드세요'; exit 1; }
+	@test -n '$(TESTS)' || { echo '  테스트 없음 — tests/$(or $(T),NN).in 이 있는지 확인하세요'; exit 1; }
 	@$(SUITE_FN); $(RUN_PY)
 
 test-cpp: $(TEST_DEPS)
-	@test -n '$(TESTS)' || { echo '  테스트 없음 — tests/01.in 과 tests/01.out 을 만드세요'; exit 1; }
+	@test -n '$(TESTS)' || { echo '  테스트 없음 — tests/$(or $(T),NN).in 이 있는지 확인하세요'; exit 1; }
 	@$(SUITE_FN); $(RUN_CPP)
 
 # --- 실행 (stdin 그대로) ----------------------------------------------------
