@@ -8,19 +8,23 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// 테스트 케이스 하나를 풀고 결과를 출력한다.
-void solve() {
-    // TODO
-}
-
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    // 종만북/algospot 은 첫 줄이 테스트 케이스 개수 C.
+    // 종만북/algospot 은 첫 줄이 테스트 케이스 개수.
     int C;
     if (!(cin >> C)) return 0;
-    while (C--) solve();
+    while (C--) {
+        // TODO: 케이스 하나를 읽고 풀어서 출력
+        //
+        //   int n; cin >> n;
+        //   vector<string> words(n);
+        //   for (auto& w : words) cin >> w;
+        //   cout << answer << '\n';
+        //
+        // 디버그는 cerr 로 — cout 은 채점 대상이다.
+    }
 
     return 0;
 }
