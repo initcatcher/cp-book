@@ -1,0 +1,246 @@
+{
+  // cp-book — Makefile 태스크.
+  //
+  // "현재 문제" 태스크들은 ${fileDirname} 을 쓴다 — 지금 편집기에 열려 있는
+  // 파일이 속한 폴더에서 make 를 돌린다. sol.cpp / sol.py / note.md 중 아무거나
+  // 열어둔 상태면 그 문제가 대상이 된다. cd 할 필요가 없다.
+  //
+  //   Ctrl+Shift+B                        현재 문제 테스트 (기본 빌드 태스크)
+  //   Ctrl+Shift+P → Tasks: Run Task      나머지 전부
+  //
+  // g++ 컴파일 에러는 problemMatcher 가 잡아서 Problems 패널에 띄운다.
+  // 경로가 sol.cpp 처럼 상대경로로 나오므로 fileLocation 기준을 ${fileDirname}
+  // 으로 잡아 둔다 — 그래야 클릭했을 때 올바른 파일로 점프한다.
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "test: 현재 문제",
+      "type": "shell",
+      "command": "make test",
+      "options": { "cwd": "${fileDirname}" },
+      "group": { "kind": "build", "isDefault": true },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true,
+        "focus": false
+      },
+      "problemMatcher": {
+        "owner": "cpp",
+        "fileLocation": ["relative", "${fileDirname}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error|note):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
+    },
+    {
+      "label": "test: 현재 문제 — 케이스 하나",
+      "type": "shell",
+      "command": "make test T=${input:testCase}",
+      "options": { "cwd": "${fileDirname}" },
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true,
+        "focus": false
+      },
+      "problemMatcher": {
+        "owner": "cpp",
+        "fileLocation": ["relative", "${fileDirname}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error|note):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
+    },
+    {
+      "label": "test: 현재 문제 — 파이썬만",
+      "type": "shell",
+      "command": "make test-py",
+      "options": { "cwd": "${fileDirname}" },
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true,
+        "focus": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "test: 현재 문제 — C++만",
+      "type": "shell",
+      "command": "make test-cpp",
+      "options": { "cwd": "${fileDirname}" },
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true,
+        "focus": false
+      },
+      "problemMatcher": {
+        "owner": "cpp",
+        "fileLocation": ["relative", "${fileDirname}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error|note):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
+    },
+    {
+      "label": "run: 현재 문제 (직접 입력)",
+      "type": "shell",
+      "command": "make run",
+      "options": { "cwd": "${fileDirname}" },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true,
+        "focus": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "run: 현재 문제 < tests/NN.in",
+      "type": "shell",
+      "command": "make run < tests/${input:testCase}.in",
+      "options": { "cwd": "${fileDirname}" },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true,
+        "focus": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "dbg: 현재 문제 빌드 (asan+ubsan)",
+      "type": "shell",
+      "command": "make dbg",
+      "options": { "cwd": "${fileDirname}" },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true,
+        "focus": false
+      },
+      "problemMatcher": {
+        "owner": "cpp",
+        "fileLocation": ["relative", "${fileDirname}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error|note):\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
+    },
+    {
+      "label": "clean: 현재 문제",
+      "type": "shell",
+      "command": "make clean",
+      "options": { "cwd": "${fileDirname}" },
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    },
+
+    {
+      "label": "test: 전체",
+      "type": "shell",
+      "command": "make test",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true,
+        "focus": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "test: 챕터",
+      "type": "shell",
+      "command": "make test CH=${input:chapter}",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "test",
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true,
+        "focus": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "new: 새 문제",
+      "type": "shell",
+      "command": "make new P=${input:problemPath}",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "list: 문제 목록",
+      "type": "shell",
+      "command": "make list",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true,
+        "focus": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "clean: 전체",
+      "type": "shell",
+      "command": "make clean",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "problemMatcher": []
+    }
+  ],
+
+  "inputs": [
+    {
+      "id": "testCase",
+      "type": "promptString",
+      "description": "테스트 케이스 번호 (tests/NN.in 의 NN)",
+      "default": "01"
+    },
+    {
+      "id": "chapter",
+      "type": "promptString",
+      "description": "챕터 폴더명 (예: 08-dp)"
+    },
+    {
+      "id": "problemPath",
+      "type": "promptString",
+      "description": "새 문제 경로 <챕터>/<문제> (예: 08-dp/WILDCARD)"
+    }
+  ]
+}
